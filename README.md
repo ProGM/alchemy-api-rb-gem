@@ -8,3 +8,8 @@ https://github.com/AlchemyAPI/alchemyapi_ruby
 Add this line in your Gemfile
 
     gem 'alchemy-api-rb-gem', :git => 'git://github.com/ProGM/alchemy-api-rb-gem.git'
+
+## Run tests: ##
+First of all, add in `alchemy.key` your [API Key](http://www.alchemyapi.com/api/register.html). Then just perform:
+
+    bundle exec rake

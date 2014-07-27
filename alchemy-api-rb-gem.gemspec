@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = '2014-06-07'
   s.summary     = 'AlchemyAPI'
   s.description = 'A gem distribution for AlchemyAPI for ruby, see https://github.com/AlchemyAPI/alchemyapi_ruby'
-  s.authors     = ['ProGM']
+  s.authors     = ['AlchemyAPI', 'ProGM']
   s.email       = 'progiemmeh@gmail.com'
   s.files       = ['lib/alchemyapi.rb', 'dog.jpg', 'tests/test_alchemyapi.rb']
   s.homepage    = 'http://github.com/alchemy-api-rb-gem'
