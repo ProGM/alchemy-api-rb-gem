@@ -15,12 +15,11 @@
 #   limitations under the License.
 
 require 'rubygems'
-require 'net/http'
 require 'uri'
 require 'json'
+require 'faraday'
 
 class AlchemyAPI
-
   # Setup the endpoints
   @@ENDPOINTS = {}
   @@ENDPOINTS['sentiment'] = {}
@@ -592,7 +591,6 @@ class AlchemyAPI
   # The response, already converted from JSON to a Ruby object.
   #
   def analyze(url, options)
-
     # Insert the base URL
     url = @@BASE_URL + url
 
@@ -601,17 +599,14 @@ class AlchemyAPI
     options['outputMode'] = 'json'
 
     uri = URI.parse(url)
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.set_form_data(options)
 
-    # disable gzip encoding which blows up in Zlib due to Ruby 2.0 bug
-    # otherwise you'll get Zlib::BufError: buffer error
-    request['Accept-Encoding'] = 'identity'
+    # Force Faraday using excon, to avoid Zlib::BufError: buffer error
+    Faraday.default_adapter = :excon
+
+    request = Faraday.new(url: "#{uri.scheme}://#{uri.host}")
 
     # Fire off the HTTP request
-    res = Net::HTTP.start(uri.host, uri.port) do |http|
-          http.request(request)
-      end
+    res = request.post uri.request_uri, options
 
     # parse and return the response
     return JSON.parse(res.body)
@@ -643,17 +638,13 @@ class AlchemyAPI
     # Parse URL
     uri = URI.parse(url)
 
-    request = Net::HTTP::Post.new(uri.request_uri)
-    request.body = body.to_s
+    # Force Faraday using excon, to avoid Zlib::BufError: buffer error
+    Faraday.default_adapter = :excon
 
-    # disable gzip encoding which blows up in Zlib due to Ruby 2.0 bug
-    # otherwise you'll get Zlib::BufError: buffer error
-    request['Accept-Encoding'] = 'identity'
+    request = Faraday.new(url: "#{uri.scheme}://#{uri.host}")
 
     # Fire off the HTTP request
-    res = Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request(request)
-    end
+    res = request.post uri.request_uri, body.to_s
 
     # parse and return the response
     return JSON.parse(res.body)
